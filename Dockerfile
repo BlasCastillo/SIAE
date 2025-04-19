@@ -11,8 +11,10 @@ COPY --from=build /app /app
 RUN apk add --no-cache postgresql-dev \
     && docker-php-ext-install pdo pdo_pgsql
 
-# Configurar Laravel
-RUN php artisan config:cache && \
+# Permisos y optimización
+RUN chmod -R 775 storage bootstrap/cache && \
+    php artisan config:clear && \
+    php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache
 
