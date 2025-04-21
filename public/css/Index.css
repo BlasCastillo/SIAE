@@ -27,7 +27,7 @@ body {
     justify-content: center;
     flex-direction: column;
     width: 65%;
-    background: var(--main-color);
+    background: var(--secondary-color);
     backdrop-filter: blur(30px);
     border-radius: 0% 30% 20% 0;
     transition: border-radius .3s;
@@ -38,7 +38,7 @@ body {
 }
 
 .form-image {
-    width: 400px;
+    width: 300px;
     animation: scale-up 3s ease-in-out alternate infinite;
 }
 
@@ -189,7 +189,7 @@ body {
         flex-direction: column;
         align-items: center;
         width: 100%;
-        padding: 0 38vw;
+        padding: 0 24vw;
         transition: .3s;
     }
 }

@@ -82,7 +82,8 @@ return [
             ]) : [],
         ],
 
-/*         'pgsql' => [
+/*          original*/
+            'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
@@ -95,9 +96,9 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'prefer',
-        ], */
+        ],
 
-        /* supabase */
+        /* supabase
 
         'pgsql' => [
             'driver' => 'pgsql',
@@ -112,7 +113,23 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'laravel',
             'sslmode' => 'prefer',
-        ],
+        ],*/
+
+        /* 'pgsql' => [
+            'driver' => 'pgsql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'postgres'),
+            'username' => env('DB_USERNAME', 'postgres'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'public', // Asegúrate de que sea 'public' o tu esquema personalizado
+            'search_path' => 'public', // Añade esta línea para establecer el search_path
+            'sslmode' => 'prefer',
+        ], */
+
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',

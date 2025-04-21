@@ -16,7 +16,7 @@
     <div class="form-container">
         <div class="col col-1">
             <div class="image-layer">
-                <img src="{{ asset('Imagenes/font1.png') }}" class="form-image">
+                <img src="{{ asset('Imagenes/siae-login.png') }}" class="form-image">
             </div>
         </div>
         <div class="col col-2">
