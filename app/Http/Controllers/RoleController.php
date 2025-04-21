@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB; // <-- Añade esta línea
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -16,97 +16,92 @@ class RoleController extends Controller
 
     public function create()
     {
-        $permissions = Permission::all();
-
-        $categories = [
-            'Acceso y Autenticación' => [],
-            'Gestión de Aulas' => [],
-            'Gestión de Tipo Aulas' => [],
-            'Gestión de PNFs' => [],
-            'Gestión de Trayectos' => [],
-            'Gestión de Roles' => [],
-        ];
-
-        foreach ($permissions as $permission) {
-            if ($permission->name === 'login' || $permission->name === 'dashboard') {
-                $categories['Acceso y Autenticación'][] = $permission;
-            } elseif (strpos($permission->name, 'aulas.') === 0) {
-                $categories['Gestión de Aulas'][] = $permission;
-            } elseif (strpos($permission->name, 'tipo-aulas.') === 0) {
-                $categories['Gestión de Tipo Aulas'][] = $permission;
-            } elseif (strpos($permission->name, 'pnfs.') === 0) {
-                $categories['Gestión de PNFs'][] = $permission;
-            } elseif (strpos($permission->name, 'trayectos.') === 0) {
-                $categories['Gestión de Trayectos'][] = $permission;
-            } elseif (strpos($permission->name, 'roles.') === 0) {
-                $categories['Gestión de Roles'][] = $permission;
-            }
-        }
-
-        return view('roles.create', compact('categories'));
+        return view('roles.create');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name',
-            'permissions' => 'array',
-        ]);
-
-        $role = Role::create(['name' => $request->name]);
-
-        if ($request->has('permissions')) {
-            $role->syncPermissions($request->permissions);
-        }
-
-        return redirect()->route('roles.index')->with('success', 'Rol creado exitosamente.');
+        Role::create(['name' => $request->input('name')]);
+        return redirect()->route('roles.index')->with('success', 'Rol creado correctamente');
     }
 
-    public function edit($id)
-    {
-        $role = Role::findOrFail($id);
-        $permissions = Permission::all();
+   // app/Http/Controllers/RoleController.php
 
-        $categories = [
-            'Acceso y Autenticación' => [],
-            'Gestión de Aulas' => [],
-            'Gestión de Tipo Aulas' => [],
-            'Gestión de PNFs' => [],
-            'Gestión de Trayectos' => [],
-            'Gestión de Roles' => [],
-        ];
+   public function edit($roleId)
+   {
+       $role = Role::findOrFail($roleId);
+       $permissions = Permission::all();
 
-        foreach ($permissions as $permission) {
-            if ($permission->name === 'login' || $permission->name === 'dashboard') {
-                $categories['Acceso y Autenticación'][] = $permission;
-            } elseif (strpos($permission->name, 'aulas.') === 0) {
-                $categories['Gestión de Aulas'][] = $permission;
-            } elseif (strpos($permission->name, 'tipo-aulas.') === 0) {
-                $categories['Gestión de Tipo Aulas'][] = $permission;
-            } elseif (strpos($permission->name, 'pnfs.') === 0) {
-                $categories['Gestión de PNFs'][] = $permission;
-            } elseif (strpos($permission->name, 'trayectos.') === 0) {
-                $categories['Gestión de Trayectos'][] = $permission;
-            } elseif (strpos($permission->name, 'roles.') === 0) {
-                $categories['Gestión de Roles'][] = $permission;
-            }
-        }
+       // Agrupar permisos por su tipo (primera parte del nombre)
+       $groupedPermissions = $permissions->groupBy(function ($permission) {
+           return explode('-', $permission->name)[0];
+       });
 
-        return view('roles.edit', compact('role', 'categories'));
+       return view('roles.edit', [
+           'role' => $role,
+           'groupedPermissions' => $groupedPermissions,
+           'rolePermissions' => $role->permissions->pluck('id')->toArray()
+       ]);
+   }
+
+public function update(Request $request, $roleId)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'permissions' => 'sometimes|array',
+        'permissions.*' => 'exists:permissions,id'
+    ]);
+
+    $role = Role::findOrFail($roleId);
+    $role->update(['name' => $validated['name']]);
+
+    // Obtener los nombres de los permisos basados en los IDs
+    if (isset($validated['permissions'])) {
+        $permissionNames = Permission::whereIn('id', $validated['permissions'])
+                                   ->pluck('name')
+                                   ->toArray();
+
+        $role->syncPermissions($permissionNames);
+    } else {
+        $role->syncPermissions([]); // Si no hay permisos seleccionados
     }
 
-    public function update(Request $request, $id)
-    {
-        $role = Role::findOrFail($id);
+    return redirect()->route('roles.index')
+                   ->with('success', 'Rol actualizado correctamente');
+}
 
-        $request->validate([
-            'permissions' => 'array',
-        ]);
 
-        if ($request->has('permissions')) {
-            $role->syncPermissions($request->permissions);
-        }
 
-        return redirect()->route('roles.index')->with('success', 'Permisos actualizados correctamente.');
+
+public function destroy($roleId)
+{
+    try {
+        // Buscar el rol sin acceder a la relación `users()`
+        $role = Role::findOrFail($roleId);
+
+        // Eliminar cualquier referencia en `model_has_roles`
+        DB::table('model_has_roles')->where('role_id', $roleId)->delete();
+
+        // Finalmente, eliminar el rol
+        $role->delete();
+
+        // Usar session()->flash() en lugar de with()
+        session()->flash('success', 'Rol eliminado correctamente');
+
+        return redirect()->route('roles.index');
+    } catch (\Exception $e) {
+        session()->flash('error', 'No se pudo eliminar el rol: '.$e->getMessage());
+
+        return redirect()->back();
     }
+}
+
+
+
+
+
+
+
+
+
 }

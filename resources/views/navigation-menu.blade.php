@@ -26,6 +26,12 @@
                         </x-slot>
 
                         <x-slot name="content">
+                            @can('users.index')
+                                <x-dropdown-link href="{{ route('users.index') }}">
+                                    {{ __('Usuarios') }}
+                                </x-dropdown-link>
+
+                            @endcan
                             @can('aulas.index')
                                 <x-dropdown-link href="{{ route('aulas.index') }}">
                                     {{ __('Aulas') }}

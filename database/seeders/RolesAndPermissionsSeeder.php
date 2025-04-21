@@ -44,19 +44,34 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->createPermission('aulas.create');
             $this->createPermission('aulas.edit');
             $this->createPermission('aulas.show');
+            $this->createPermission('aulas.update');
+            $this->createPermission('aulas.store');
             $this->createPermission('aulas.delete');
 
             // Permisos para TIPO-AULAS
             $this->createPermission('tipo-aulas.index');
             $this->createPermission('tipo-aulas.create');
             $this->createPermission('tipo-aulas.edit');
+            $this->createPermission('tipo-aulas.update');
+            $this->createPermission('tipo-aulas.store');
             $this->createPermission('tipo-aulas.show');
             $this->createPermission('tipo-aulas.delete');
+
+             // Permisos para TIPO-UNIDADES-CURRICULARES
+            $this->createPermission('tipo-unidades-curriculares.index');
+            $this->createPermission('tipo-unidades-curriculares.create');
+            $this->createPermission('tipo-unidades-curriculares.edit');
+            $this->createPermission('tipo-unidades-curriculares.update');
+            $this->createPermission('tipo-unidades-curriculares.store');
+            $this->createPermission('tipo-unidades-curriculares.show');
+            $this->createPermission('tipo-unidades-curriculares.delete');
 
             // Permisos para PNFS
             $this->createPermission('pnfs.index');
             $this->createPermission('pnfs.create');
             $this->createPermission('pnfs.edit');
+            $this->createPermission('pnfs.update');
+            $this->createPermission('pnfs.store');
             $this->createPermission('pnfs.show');
             $this->createPermission('pnfs.delete');
 
@@ -64,15 +79,27 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->createPermission('trayectos.index');
             $this->createPermission('trayectos.create');
             $this->createPermission('trayectos.edit');
+            $this->createPermission('trayectos.update');
+            $this->createPermission('trayectos.store');
             $this->createPermission('trayectos.show');
             $this->createPermission('trayectos.delete');
+
+            // Permisos para SECCIONES
+            $this->createPermission('secciones.index');
+            $this->createPermission('secciones.create');
+            $this->createPermission('secciones.edit');
+            $this->createPermission('secciones.update');
+            $this->createPermission('secciones.store');
+            $this->createPermission('secciones.show');
+            $this->createPermission('secciones.delete');
 
             // Permisos para ROLES
             $this->createPermission('roles.index');
             $this->createPermission('roles.create');
             $this->createPermission('roles.edit');
-            $this->createPermission('roles.editName');
             $this->createPermission('roles.show');
+            $this->createPermission('roles.update');
+            $this->createPermission('roles.store');
             $this->createPermission('roles.delete');
 
             // Permisos para inicio de sesión
@@ -82,101 +109,123 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->createPermission('dashboard');
         }
 
-    private function assignPermissionsToRoles()
-    {
-        // Asignar permisos al rol USUARIO
-        $userRole = Role::where('name', 'USUARIO')->first();
-        $userRole->givePermissionTo([
-            'dashboard',
-        ]);
+        private function assignPermissionsToRoles()
+        {
+            // Asignar permisos al rol USUARIO
+            $userRole = Role::where('name', 'USUARIO')->first();
+            $userRole->givePermissionTo([
+                'dashboard',
+            ]);
 
-        // Asignar permisos al rol DOCENTE
-        $docenteRole = Role::where('name', 'DOCENTE')->first();
-        $docenteRole->givePermissionTo([
-            'login',
-            'aulas.index',
-            'aulas.show',
-            'pnfs.index',
-            'pnfs.show',
-        ]);
+            // Asignar permisos al rol DOCENTE
+            $docenteRole = Role::where('name', 'DOCENTE')->first();
+            $docenteRole->givePermissionTo([
+                'login',
+                'aulas.index',
+                'aulas.show',
+                'pnfs.index',
+                'pnfs.show',
+            ]);
 
-        // Asignar permisos al rol COORDINADOR
-        $coordinadorRole = Role::where('name', 'COORDINADOR')->first();
-        $coordinadorRole->givePermissionTo([
-            'login',
-            'dashboard',
-            'aulas.index',
-            'aulas.create',
-            'aulas.edit',
-            'aulas.show',
-            'aulas.delete',
-            'pnfs.index',
-            'pnfs.create',
-            'pnfs.edit',
-            'pnfs.show',
-            'pnfs.delete',
-            'trayectos.index',
-            'trayectos.create',
-            'trayectos.edit',
-            'trayectos.show',
-            'trayectos.delete',
-        ]);
+            // Asignar permisos al rol COORDINADOR
+            $coordinadorRole = Role::where('name', 'COORDINADOR')->first();
+            $coordinadorRole->givePermissionTo([
+                'login',
+                'dashboard',
+                'aulas.index',
+                'aulas.create',
+                'aulas.store',
+                'aulas.edit',
+                'aulas.update',
+                'aulas.show',
+                'aulas.delete',
+                'pnfs.index',
+                'pnfs.create',
+                'pnfs.store',
+                'pnfs.edit',
+                'pnfs.update',
+                'pnfs.show',
+                'pnfs.delete',
+                'trayectos.index',
+                'trayectos.create',
+                'trayectos.store',
+                'trayectos.edit',
+                'trayectos.update',
+                'trayectos.show',
+                'trayectos.delete',
+            ]);
 
-        // Asignar permisos al rol DIRECTOR
-        $directorRole = Role::where('name', 'DIRECTOR')->first();
-        $directorRole->givePermissionTo([
-            'login',
-            'dashboard',
-            'aulas.index',
-            'aulas.create',
-            'aulas.edit',
-            'aulas.show',
-            'aulas.delete',
-            'pnfs.index',
-            'pnfs.create',
-            'pnfs.edit',
-            'pnfs.show',
-            'pnfs.delete',
-            'trayectos.index',
-            'trayectos.create',
-            'trayectos.edit',
-            'trayectos.show',
-            'trayectos.delete',
-        ]);
+            // Asignar permisos al rol DIRECTOR
+            $directorRole = Role::where('name', 'DIRECTOR')->first();
+            $directorRole->givePermissionTo([
+                'login',
+                'dashboard',
+                'aulas.index',
+                'aulas.create',
+                'aulas.store',
+                'aulas.edit',
+                'aulas.update',
+                'aulas.show',
+                'aulas.delete',
+                'pnfs.index',
+                'pnfs.create',
+                'pnfs.store',
+                'pnfs.edit',
+                'pnfs.update',
+                'pnfs.show',
+                'pnfs.delete',
+                'trayectos.index',
+                'trayectos.create',
+                'trayectos.store',
+                'trayectos.edit',
+                'trayectos.update',
+                'trayectos.show',
+                'trayectos.delete',
+            ]);
 
-        // Asignar permisos al rol ADMINISTRADOR
-        $adminRole = Role::where('name', 'ADMINISTRADOR')->first();
-        $adminRole->givePermissionTo([
-            'login',
-            'dashboard',
-            'roles.index',
-            'roles.create',
-            'roles.edit',
-            'roles.show',
-            'roles.delete',
-            'aulas.index',
-            'aulas.create',
-            'aulas.edit',
-            'aulas.show',
-            'aulas.delete',
-            'tipo-aulas.index',
-            'tipo-aulas.create',
-            'tipo-aulas.edit',
-            'tipo-aulas.show',
-            'tipo-aulas.delete',
-            'pnfs.index',
-            'pnfs.create',
-            'pnfs.edit',
-            'pnfs.show',
-            'pnfs.delete',
-            'trayectos.index',
-            'trayectos.create',
-            'trayectos.edit',
-            'trayectos.show',
-            'trayectos.delete',
-        ]);
+            // Asignar permisos al rol ADMINISTRADOR
+            $adminRole = Role::where('name', 'ADMINISTRADOR')->first();
+            $adminRole->givePermissionTo([
+                'login',
+                'dashboard',
+                'roles.index',
+                'roles.create',
+                'roles.store',
+                'roles.edit',
+                'roles.update',
+                'roles.show',
+                'roles.delete',
+                'aulas.index',
+                'aulas.create',
+                'aulas.store',
+                'aulas.edit',
+                'aulas.update',
+                'aulas.show',
+                'aulas.delete',
+                'tipo-aulas.index',
+                'tipo-aulas.create',
+                'tipo-aulas.store',
+                'tipo-aulas.edit',
+                'tipo-aulas.update',
+                'tipo-aulas.show',
+                'tipo-aulas.delete',
+                'pnfs.index',
+                'pnfs.create',
+                'pnfs.store',
+                'pnfs.edit',
+                'pnfs.update',
+                'pnfs.show',
+                'pnfs.delete',
+                'trayectos.index',
+                'trayectos.create',
+                'trayectos.store',
+                'trayectos.edit',
+                'trayectos.update',
+                'trayectos.show',
+                'trayectos.delete',
+            ]);
+        }
 
-    }
 
     private function createPermission($name)
     {

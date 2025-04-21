@@ -8,13 +8,15 @@ use App\Http\Controllers\PnfsController;
 use App\Http\Controllers\TrayectosController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 
 Route::middleware([
-    'auth:sanctum',
+    'auth:web',
     config('jetstream.auth_session'),
     'verified',
-    CheckPermission::class, // Agrega el middleware global aquí
+    CheckPermission::class,
 ])->group(function () {
+
     // AULAS
     Route::resource('aulas', AulasController::class);
     Route::put('aulas/{id}/activate', [AulasController::class, 'activate'])->name('aulas.activate');
@@ -37,6 +39,18 @@ Route::middleware([
 
     // ROLES
     Route::resource('roles', RoleController::class);
+
+
+    // USUARIOS
+    Route::middleware(['auth:web', config('jetstream.auth_session'), 'verified'])
+    ->prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::get('/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/', [UserController::class, 'store'])->name('users.store');
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    });
 
     // Dashboard protegido
     Route::get('/dashboard', function () {

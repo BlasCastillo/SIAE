@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Editar Permisos del Rol: {{ $role->name }}
+            Editar Rol: {{ $role->name }}
         </h2>
     </x-slot>
 
@@ -9,64 +9,63 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-900">Editar Rol: {{ $role->name }}</h2>
+
                     <form method="POST" action="{{ route('roles.update', $role->id) }}">
                         @csrf
                         @method('PUT')
 
-                        <div class="row">
-                            <div class="col-md-3">
-                                <ul class="nav flex-column">
-                                    @foreach($categories as $category => $permissions)
-                                        @php
-                                            $hasPermissions = false;
-                                            foreach ($permissions as $permission) {
-                                                if ($role->hasPermissionTo($permission->name)) {
-                                                    $hasPermissions = true;
-                                                    break;
-                                                }
-                                            }
-                                        @endphp
-
-                                        <li class="nav-item">
-                                            <a
-                                                class="nav-link custom-category-link edit-category-link {{ $hasPermissions ? 'active-permission-category' : 'inactive-permission-category' }} {{ $loop->first ? 'active' : '' }}"
-                                                href="#"
-                                                data-category="{{ str_replace(' ', '-', strtolower((string)$category)) }}"
-                                            >
-                                                {{ $category }}
-                                                @if($hasPermissions)
-                                                    <i class="bi bi-check-circle-fill"></i>
-                                                @endif
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                            <div class="col-md-9">
-                                @foreach($categories as $category => $permissions)
-                                    <div
-                                        id="{{ str_replace(' ', '-', strtolower((string)$category)) }}"
-                                        class="permissions-container {{ $loop->first ? 'show' : 'hide' }}"
-                                    >
-                                        <h3>{{ $category }}</h3>
-                                        <i class="bi bi-exclamation-circle-fill warning-icon"></i>
-                                        @foreach($permissions as $permission)
-                                            <div>
-                                                <input
-                                                    type="checkbox"
-                                                    name="permissions[]"
-                                                    value="{{ $permission->name }}"
-                                                    {{ $role->hasPermissionTo($permission->name) ? 'checked' : '' }}
-                                                >
-                                                {{ $permission->name }}
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endforeach
-                            </div>
+                        <!-- Nombre del Rol -->
+                        <div class="mb-4">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Nombre del Rol</label>
+                            <input id="name" name="name" type="text"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                   value="{{ $role->name }}" required>
+                            @error('name')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        <button class="btn btn-primary" type="submit">Actualizar Permisos</button>
+                        <!-- Permisos -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Permisos</label>
+
+                            @foreach($groupedPermissions as $group => $permissions)
+                            <div class="mb-6">
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">{{ ucfirst($group) }}</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    @foreach($permissions as $permission)
+                                    <div class="flex items-start">
+                                        <div class="flex items-center h-5">
+                                            <input id="permission-{{ $permission->id }}"
+                                                 name="permissions[]"
+                                                 value="{{ $permission->id }}"
+                                                 type="checkbox"
+                                                 class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                                 {{ in_array($permission->id, $rolePermissions) ? 'checked' : '' }}>
+                                        </div>
+                                        <div class="ml-3 text-sm">
+                                            <label for="permission-{{ $permission->id }}" class="font-medium text-gray-700">
+                                                {{ $permission->name }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+                        <div class="flex items-center justify-end mt-4">
+                            <a href="{{ route('roles.index') }}" class="btn btn-secondary mr-2">
+                                <i class="bi bi-arrow-left"></i>
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i>
+                                Actualizar Rol
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

@@ -2,25 +2,25 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Jetstream\HasTeams;
+use Laravel\Sanctum\HasApiTokens; // Importa desde Sanctum
 use Spatie\Permission\Traits\HasRoles;
-
+use Spatie\Permission\Models\Role;
 class User extends Authenticatable
 {
     use HasApiTokens;
-    use HasRoles;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -34,6 +34,7 @@ class User extends Authenticatable
         'cedula',
         'cod_telefono',
         'num_telefono',
+        'role_id', // 🔥 Agregar esto para permitir la asignación del rol
     ];
 
     /**
@@ -68,5 +69,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+        public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
     }
 }
