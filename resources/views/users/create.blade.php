@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12  items-center" style="margin: 0 auto; width: 70%;">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
@@ -134,9 +134,9 @@
                     e.preventDefault();
                 }
             }).on('input', function() {
-                let validCodes = ['0416', '0426', '0414', '0424', '0254'];
+                let validCodes = ['0416', '0426', '0412', '0414', '0424', '0254'];
                 if (!validCodes.includes($(this).val())) {
-                    mostrarError('cod_telefono', 'El código de teléfono debe ser 0416, 0426, 0414, 0424 o 0254.');
+                    mostrarError('cod_telefono', 'El código de teléfono debe ser 0416, 0426, 0412, 0414, 0424 o 0254.');
                 } else {
                     ocultarError('cod_telefono');
                 }

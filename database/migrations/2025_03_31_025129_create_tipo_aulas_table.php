@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre', 100);
             $table->string('descripcion', 100);
-            $table->integer('valor');
-            $table->boolean('estatus');
+            $table->string('estatus', 2)->default('1'); // 🔥 Por defecto activo ('1')
             $table->timestamps();
         });
     }

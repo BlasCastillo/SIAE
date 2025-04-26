@@ -12,20 +12,23 @@ class AulasSeeder extends Seeder
         $aulas = [
             [
                 'nombre' => 'Aula E-06',
-                'capacidad' => 30,
-                'tipo_aula' => 'Teoría',
+                'descripcion' => 'Aula teorica',
+                'cantidad' => 30,
+                'fk_tipo_aulas' => '2',
                 'estatus' => 1
             ],
             [
                 'nombre' => 'Laboratorio Simon Bolivar',
-                'capacidad' => 20,
-                'tipo_aula' => 'Laboratorio',
+                'descripcion' => 'laboratorio de computación',
+                'cantidad' => 20,
+                'fk_tipo_aulas' => '3',
                 'estatus' => 1
             ],
             [
                 'nombre' => 'Cancha techada',
-                'capacidad' => 25,
-                'tipo_aula' => 'Uso Multiples',
+                'descripcion' => 'Aula de usos múltiples',
+                'cantidad' => 25,
+                'fk_tipo_aulas' => '4',
                 'estatus' => 0
             ]
         ];

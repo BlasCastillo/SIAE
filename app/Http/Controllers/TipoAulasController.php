@@ -9,119 +9,59 @@ use App\Models\Aulas;
 
 class TipoAulasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        // Obtener todos los registros de la tabla tipo_aulas
-        $tipoAulas = TipoAulas::all();
-
-        // Pasar los datos a la vista
-        return view('tipo-aulas.index', compact('tipoAulas'));
+        $mostrarInactivas = $request->query('ver_inactivas', false);
+        $tipoAulas = $mostrarInactivas ? TipoAulas::all() : TipoAulas::where('estatus', '1')->get();
+        return view('tipo-aulas.index', compact('tipoAulas', 'mostrarInactivas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        // Mostrar la vista del formulario de creación
         return view('tipo-aulas.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Validar los datos del formulario
         $request->validate([
-            'nombre' => 'required|string|max:100',
-            'descripcion' => 'nullable|string|max:100',
-            'valor' => 'required|integer',
-            'estatus' => 'required|boolean',
+            'nombre' => 'required|string|max:100|unique:tipo_aulas',
+            'descripcion' => 'required|string|max:100',
         ]);
 
-        // Crear un nuevo registro en la base de datos
-        TipoAulas::create($request->all());
+        TipoAulas::create([
+            'nombre' => strtoupper($request->nombre),
+            'descripcion' => strtoupper($request->descripcion),
+            'estatus' => '1' // 🔥 Se crea como activo
+        ]);
 
-        // Redirigir a la lista de tipos de aulas con un mensaje de éxito
-        return redirect()->route('tipo-aulas.index')->with('success', 'Tipo de aula creado correctamente.');
+        return redirect()->route('tipo-aulas.index')->with('success', 'Tipo de aula creada correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(TipoAulas $tipoAula)
     {
-        // Obtener el registro por su ID
-        $tipoAula = TipoAulas::findOrFail($id);
-
-        // Mostrar la vista con los detalles del registro
-        return view('tipo-aulas.show', compact('tipoAula'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        // Obtener el registro por su ID
-        $tipoAula = TipoAulas::findOrFail($id);
-
-        // Mostrar la vista del formulario de edición
         return view('tipo-aulas.edit', compact('tipoAula'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, TipoAulas $tipoAula)
     {
-        // Validar los datos del formulario
         $request->validate([
-            'nombre' => 'required|string|max:100',
-            'descripcion' => 'nullable|string|max:100',
-            'valor' => 'required|integer',
-            'estatus' => 'required|boolean',
+            'nombre' => "required|string|max:100|unique:tipo_aulas,nombre,{$tipoAula->id}",
+            'descripcion' => 'required|string|max:100',
+            'estatus' => 'required|in:0,1',
         ]);
 
-        // Obtener el registro por su ID
-        $tipoAula = TipoAulas::findOrFail($id);
+        $tipoAula->update([
+            'nombre' => strtoupper($request->nombre),
+            'descripcion' => strtoupper($request->descripcion),
+            'estatus' => $request->estatus
+        ]);
 
-        // Actualizar el registro con los nuevos datos
-        $tipoAula->update($request->all());
-
-        // Redirigir a la lista de tipos de aulas con un mensaje de éxito
-        return redirect()->route('tipo-aulas.index')->with('success', 'Tipo de aula actualizado correctamente.');
+        return redirect()->route('tipo-aulas.index')->with('success', 'Tipo de aula actualizado correctamente');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(TipoAulas $tipoAula)
     {
-        // Obtener el registro por su ID
-        $tipoAula = TipoAulas::findOrFail($id);
-
-        // Cambiar el estatus a inactivo (eliminación lógica)
-        $tipoAula->update(['estatus' => false]);
-
-         // Desactivar todas las aulas relacionadas con este tipo de aula
-        Aulas::where('fk_tipo_aulas', $id)->update(['estatus' => false]);
-
-        // Redirigir a la lista de tipos de aulas con un mensaje de éxito
-        return redirect()->route('tipo-aulas.index')->with('success', 'Tipo de aula desactivado correctamente.');
+        $tipoAula->desactivar(); // 🔥 Eliminación lógica
+        return redirect()->route('tipo-aulas.index')->with('success', 'Tipo de aula inactivada correctamente');
     }
-
-    public function activate($id)
-    {
-        $tipoAula = TipoAulas::findOrFail($id);
-        $tipoAula->update(['estatus' => true]);
-
-        return redirect()->route('tipo-aulas.index')->with('success', 'Tipo de aula activado correctamente.');
-    }
-
-
 }

@@ -4,120 +4,70 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pnfs;
-use App\Models\UnidadesCurriculares;
 
 class PnfsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        // Obtener todos los registros de la tabla Pnfs
-        $Pnfs = Pnfs::all();
-
-        // Pasar los datos a la vista
-        return view('pnfs.index', compact('Pnfs'));
+        $mostrarInactivas = $request->query('ver_inactivas', false);
+        $pnfs = $mostrarInactivas
+            ? Pnfs::orderBy('codigo', 'asc')->get()
+            : Pnfs::where('estatus', '1')->orderBy('codigo', 'asc')->get();
+        return view('pnfs.index', compact('pnfs', 'mostrarInactivas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        // Mostrar la vista del formulario de creación
         return view('pnfs.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Validar los datos del formulario
         $request->validate([
-            'nombre' => 'required|string|max:100',
-            'descripcion' => 'nullable|string|max:100',
-            'estatus' => 'required|boolean',
+            'codigo' => 'required|string|size:2|unique:pnfs',
+            'nombre' => 'required|string|max:100|unique:pnfs,nombre',
+            'descripcion' => 'required|string|max:100',
         ]);
 
-        // Crear un nuevo registro en la base de datos
-        Pnfs::create($request->all());
-
-        // Redirigir a la lista de tipos de aulas con un mensaje de éxito
-        return redirect()->route('pnfs.index')->with('success', 'Tipo de aula creado correctamente.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        // Obtener el registro por su ID
-        $Pnfs = Pnfs::findOrFail($id);
-
-        // Mostrar la vista con los detalles del registro
-        return view('pnfs.show', compact('Pnfs'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        // Obtener el registro por su ID
-        $Pnfs = Pnfs::findOrFail($id);
-
-        // Mostrar la vista del formulario de edición
-        return view('pnfs.edit', compact('Pnfs'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        // Validar los datos del formulario
-        $request->validate([
-            'nombre' => 'required|string|max:100',
-            'descripcion' => 'nullable|string|max:100',
-            'estatus' => 'required|boolean',
+        Pnfs::create([
+            'codigo' => $request->codigo,
+            'nombre' => strtoupper($request->nombre),
+            'descripcion' => strtoupper($request->descripcion),
+            'estatus' => '1', // 🔥 Se asigna automáticamente como activo
         ]);
 
-        // Obtener el registro por su ID
-        $Pnfs = Pnfs::findOrFail($id);
-
-        // Actualizar el registro con los nuevos datos
-        $Pnfs->update($request->all());
-
-        // Redirigir a la lista de tipos de aulas con un mensaje de éxito
-        return redirect()->route('pnfs.index')->with('success', 'Tipo de aula actualizado correctamente.');
+        return redirect()->route('pnfs.index')->with('success', 'PNF creado correctamente');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+
+    public function edit(Pnfs $pnf)
     {
-        // Obtener el registro por su ID
-        $Pnfs = Pnfs::findOrFail($id);
-
-        // Cambiar el estatus a inactivo (eliminación lógica)
-        $Pnfs->update(['estatus' => false]);
-
-         // Desactivar todas las Unidades Curriculares relacionadas con este tipo de aula
-         UnidadesCurriculares::where('fk_pnf', $id)->update(['estatus' => false]);
-
-        // Redirigir a la lista de tipos de aulas con un mensaje de éxito
-        return redirect()->route('pnfs.index')->with('success', 'Tipo de aula desactivado correctamente.');
+        return view('pnfs.edit', compact('pnf'));
     }
 
-    public function activate($id)
+    public function update(Request $request, Pnfs $pnf)
     {
-        $Pnfs = Pnfs::findOrFail($id);
-        $Pnfs->update(['estatus' => true]);
+        $request->validate([
+            'codigo' => "required|string|size:2|unique:pnfs,codigo,{$pnf->id}",
+            'nombre' => "required|string|max:100|unique:pnfs,nombre,{$pnf->id}",
+            'descripcion' => 'required|string|max:100',
+            'estatus' => 'required|in:0,1',
+        ]);
 
-        return redirect()->route('pnfs.index')->with('success', 'Tipo de aula activado correctamente.');
+        $pnf->update([
+            'codigo' => $request->codigo,
+            'nombre' => strtoupper($request->nombre),
+            'descripcion' => strtoupper($request->descripcion),
+            'estatus' => $request->estatus,
+        ]);
+
+        return redirect()->route('pnfs.index')->with('success', 'PNF actualizado correctamente');
     }
 
+
+    public function destroy(Pnfs $pnf)
+    {
+        $pnf->desactivar(); // 🔥 Eliminación lógica
+        return redirect()->route('pnfs.index')->with('success', 'PNF inactivado correctamente');
+    }
 }

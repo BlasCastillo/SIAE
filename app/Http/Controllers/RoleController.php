@@ -27,22 +27,23 @@ class RoleController extends Controller
 
    // app/Http/Controllers/RoleController.php
 
-   public function edit($roleId)
-   {
-       $role = Role::findOrFail($roleId);
-       $permissions = Permission::all();
+    public function edit($roleId)
+    {
+        $role = Role::findOrFail($roleId);
+        $permissions = Permission::all();
 
-       // Agrupar permisos por su tipo (primera parte del nombre)
-       $groupedPermissions = $permissions->groupBy(function ($permission) {
-           return explode('-', $permission->name)[0];
-       });
+    // Agrupar permisos por la primera parte del nombre, considerando "-" o "."
+    $groupedPermissions = $permissions->groupBy(function ($permission) {
+        $parts = preg_split('/[-._]/', $permission->name);
+        return $parts[0]; // Tomar la primera parte del nombre
+    });
 
-       return view('roles.edit', [
-           'role' => $role,
-           'groupedPermissions' => $groupedPermissions,
-           'rolePermissions' => $role->permissions->pluck('id')->toArray()
-       ]);
-   }
+        return view('roles.edit', [
+            'role' => $role,
+            'groupedPermissions' => $groupedPermissions,
+            'rolePermissions' => $role->permissions->pluck('id')->toArray()
+        ]);
+    }
 
 public function update(Request $request, $roleId)
 {
@@ -58,8 +59,8 @@ public function update(Request $request, $roleId)
     // Obtener los nombres de los permisos basados en los IDs
     if (isset($validated['permissions'])) {
         $permissionNames = Permission::whereIn('id', $validated['permissions'])
-                                   ->pluck('name')
-                                   ->toArray();
+                                    ->pluck('name')
+                                    ->toArray();
 
         $role->syncPermissions($permissionNames);
     } else {

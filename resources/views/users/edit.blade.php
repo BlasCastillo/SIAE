@@ -5,7 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+
+    <div class="py-12  items-center" style="margin: 0 auto; width: 40%;">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
@@ -52,7 +53,7 @@
 
                         <div class="mt-4">
                             <x-label for="role_id" value="Rol" />
-                            <select name="role_id" class="block mt-1 w-full">
+                            <select name="role_id" class="w-full pl-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" >
                                 @foreach ($roles as $role)
                                     <option value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>
                                         {{ $role->name }}
@@ -63,6 +64,7 @@
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
+                            <a href={{ asset('users') }} class="btn btn-secondary">Volver</a>
                             <button class="btn btn-primary"> <i class="bi bi-pencil"></i>
                                 Actualizar Usuario
                             </button>

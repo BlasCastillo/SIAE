@@ -9,25 +9,26 @@ class Trayectos extends Model
 {
     use HasFactory;
 
-    // Especifica el nombre de la tabla (opcional si sigue la convención)
     protected $table = 'trayectos';
 
-    // Campos que se pueden asignar masivamente
-    protected $fillable = [
-        'nombre',
-        'descripcion',
-        'estatus',
-    ];
+    protected $fillable = ['codigo', 'nombre', 'descripcion', 'estatus', 'fk_pnf'];
 
-    // Campos que deben ser tratados como fechas (opcional)
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
+    // 🔥 Relación con PNF (Un trayecto pertenece a un PNF)
+    public function pnf()
+    {
+        return $this->belongsTo(Pnfs::class, 'fk_pnf');
+    }
 
-    // Casts para transformar tipos de datos (opcional)
-    protected $casts = [
-        'estatus' => 'boolean',
-    ];
+    // 🔥 Método para desactivar un trayecto
+    public function desactivar()
+    {
+        $this->update(['estatus' => '0']);
+    }
+
+    // 🔥 Método para activar un trayecto
+    public function activar()
+    {
+        $this->update(['estatus' => '1']);
+    }
 }
 

@@ -2,123 +2,80 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pnfs;
 use Illuminate\Http\Request;
 use App\Models\Trayectos;
-use App\Models\UnidadesCurriculares;
 
 class TrayectosController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        // Obtener todos los registros de la tabla tipo_aulas
-        $trayectos = Trayectos::all();
-
-        // Pasar los datos a la vista
-        return view('trayectos.index', compact('trayectos'));
+        $mostrarInactivas = $request->query('ver_inactivas', false);
+        $trayectos = $mostrarInactivas ? Trayectos::all() : Trayectos::where('estatus', '1')->get();
+        return view('trayectos.index', compact('trayectos', 'mostrarInactivas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        // Mostrar la vista del formulario de creación
-        return view('trayectos.create');
+        $pnfs = Pnfs::where('estatus', '1')->get(); // 🔥 Solo PNF activos
+        return view('trayectos.create', compact('pnfs'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Validar los datos del formulario
         $request->validate([
+            'codigo' => 'required|string|size:2',
             'nombre' => 'required|string|max:100',
             'descripcion' => 'required|string|max:100',
-            'estatus' => 'required|boolean',
+            'fk_pnf' => 'required|exists:pnfs,id',
+            // 🔥 Validación condicional: bloquea duplicados solo dentro del mismo PNF
+            'codigo' => "unique:trayectos,codigo,NULL,id,nombre,{$request->nombre},fk_pnf,{$request->fk_pnf}",
+            'nombre' => "unique:trayectos,nombre,NULL,id,codigo,{$request->codigo},fk_pnf,{$request->fk_pnf}"
         ]);
 
-        // Crear un nuevo registro en la base de datos
-        Trayectos::create($request->all());
 
-        // Redirigir a la lista de tipos de aulas con un mensaje de éxito
-        return redirect()->route('trayectos.index')->with('success', 'Tipo de aula creado correctamente.');
+        Trayectos::create([
+            'codigo' => $request->codigo,
+            'nombre' => strtoupper($request->nombre),
+            'descripcion' => strtoupper($request->descripcion),
+            'estatus' => '1',
+            'fk_pnf' => $request->fk_pnf
+        ]);
+
+        return redirect()->route('trayectos.index')->with('success', 'Trayecto creado correctamente');
+
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Trayectos $trayecto)
     {
-        // Obtener el registro por su ID
-        $trayectos = Trayectos::findOrFail($id);
-
-        // Mostrar la vista con los detalles del registro
-        return view('trayectos.show', compact('trayectos'));
+        $pnfs = Pnfs::where('estatus', '1')->get();
+        return view('trayectos.edit', compact('trayecto', 'pnfs'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Trayectos $trayecto)
     {
-        // Obtener el registro por su ID
-        $trayectos = Trayectos::findOrFail($id);
-
-        // Mostrar la vista del formulario de edición
-        return view('trayectos.edit', compact('trayectos'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        // Validar los datos del formulario
         $request->validate([
-            'nombre' => 'required|string|max:100',
+            'codigo' => "required|string|size:2|unique:trayectos,codigo,{$trayecto->id},id,nombre,{$request->nombre},fk_pnf,{$request->fk_pnf}",
+            'nombre' => "required|string|max:100|unique:trayectos,nombre,{$trayecto->id},id,codigo,{$request->codigo},fk_pnf,{$request->fk_pnf}",
             'descripcion' => 'required|string|max:100',
-            'estatus' => 'required|boolean',
+            'estatus' => 'required|in:0,1',
+            'fk_pnf' => 'required|exists:pnfs,id',
         ]);
 
-        // Obtener el registro por su ID
-        $trayectos = Trayectos::findOrFail($id);
+        $trayecto->update([
+            'codigo' => $request->codigo,
+            'nombre' => strtoupper($request->nombre),
+            'descripcion' => strtoupper($request->descripcion),
+            'estatus' => $request->estatus,
+            'fk_pnf' => $request->fk_pnf,
+        ]);
 
-        // Actualizar el registro con los nuevos datos
-        $trayectos->update($request->all());
-
-        // Redirigir a la lista de tipos de aulas con un mensaje de éxito
-        return redirect()->route('trayectos.index')->with('success', 'Tipo de aula actualizado correctamente.');
+        return redirect()->route('trayectos.index')->with('success', 'Trayecto actualizado correctamente');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Trayectos $trayecto)
     {
-        // Obtener el registro por su ID
-        $trayectos = Trayectos::findOrFail($id);
-
-        // Cambiar el estatus a inactivo (eliminación lógica)
-        $trayectos->update(['estatus' => false]);
-
-         // Desactivar todas las aulas relacionadas con este tipo de aula
-        UnidadesCurriculares::where('fk_trayectos', $id)->update(['estatus' => false]);
-
-        // Redirigir a la lista de tipos de aulas con un mensaje de éxito
-        return redirect()->route('trayectos.index')->with('success', 'Tipo de aula desactivado correctamente.');
+        $trayecto->desactivar(); // 🔥 Eliminación lógica
+        return redirect()->route('trayectos.index')->with('success', 'Trayecto inactivado correctamente');
     }
-
-    public function activate($id)
-    {
-        $trayectos = Trayectos::findOrFail($id);
-        $trayectos->update(['estatus' => true]);
-
-        return redirect()->route('trayectos.index')->with('success', 'Tipo de aula activado correctamente.');
-    }
-
-
 }

@@ -18,19 +18,16 @@ class TipoAulaSeeder extends Seeder
             [
                 'nombre' => 'Aula Teórica',
                 'descripcion' => 'Aula para clases teóricas',
-                'valor' => 20,
                 'estatus' => 1,
             ],
             [
                 'nombre' => 'Laboratorio de Informática',
                 'descripcion' => 'Aula equipada con computadoras',
-                'valor' => 20,
                 'estatus' => 1,
             ],
             [
                 'nombre' => 'Aula Multimedia',
                 'descripcion' => 'Aula con equipos multimedia',
-                'valor' => 20,
                 'estatus' => 1,
             ],
         ]);

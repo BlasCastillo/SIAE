@@ -5,11 +5,17 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
     public function run()
     {
+        // Truncar tablas relacionadas con permisos y roles
+        Permission::truncate();
+        Role::truncate();
+        DB::table('model_has_permissions')->truncate();
+        DB::table('role_has_permissions')->truncate();
         // Reset cached permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
@@ -46,7 +52,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->createPermission('aulas.show');
             $this->createPermission('aulas.update');
             $this->createPermission('aulas.store');
-            $this->createPermission('aulas.delete');
+            $this->createPermission('aulas.destroy');
 
             // Permisos para TIPO-AULAS
             $this->createPermission('tipo-aulas.index');
@@ -55,7 +61,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->createPermission('tipo-aulas.update');
             $this->createPermission('tipo-aulas.store');
             $this->createPermission('tipo-aulas.show');
-            $this->createPermission('tipo-aulas.delete');
+            $this->createPermission('tipo-aulas.destroy');
 
              // Permisos para TIPO-UNIDADES-CURRICULARES
             $this->createPermission('tipo-unidades-curriculares.index');
@@ -64,7 +70,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->createPermission('tipo-unidades-curriculares.update');
             $this->createPermission('tipo-unidades-curriculares.store');
             $this->createPermission('tipo-unidades-curriculares.show');
-            $this->createPermission('tipo-unidades-curriculares.delete');
+            $this->createPermission('tipo-unidades-curriculares.destroy');
 
             // Permisos para PNFS
             $this->createPermission('pnfs.index');
@@ -73,7 +79,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->createPermission('pnfs.update');
             $this->createPermission('pnfs.store');
             $this->createPermission('pnfs.show');
-            $this->createPermission('pnfs.delete');
+            $this->createPermission('pnfs.destroy');
 
             // Permisos para TRAYECTOS
             $this->createPermission('trayectos.index');
@@ -82,7 +88,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->createPermission('trayectos.update');
             $this->createPermission('trayectos.store');
             $this->createPermission('trayectos.show');
-            $this->createPermission('trayectos.delete');
+            $this->createPermission('trayectos.destroy');
 
             // Permisos para SECCIONES
             $this->createPermission('secciones.index');
@@ -91,7 +97,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->createPermission('secciones.update');
             $this->createPermission('secciones.store');
             $this->createPermission('secciones.show');
-            $this->createPermission('secciones.delete');
+            $this->createPermission('secciones.destroy');
 
             // Permisos para ROLES
             $this->createPermission('roles.index');
@@ -100,7 +106,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $this->createPermission('roles.show');
             $this->createPermission('roles.update');
             $this->createPermission('roles.store');
-            $this->createPermission('roles.delete');
+            $this->createPermission('roles.destroy');
 
             // Permisos para inicio de sesión
             $this->createPermission('login');
@@ -138,21 +144,21 @@ class RolesAndPermissionsSeeder extends Seeder
                 'aulas.edit',
                 'aulas.update',
                 'aulas.show',
-                'aulas.delete',
+                'aulas.destroy',
                 'pnfs.index',
                 'pnfs.create',
                 'pnfs.store',
                 'pnfs.edit',
                 'pnfs.update',
                 'pnfs.show',
-                'pnfs.delete',
+                'pnfs.destroy',
                 'trayectos.index',
                 'trayectos.create',
                 'trayectos.store',
                 'trayectos.edit',
                 'trayectos.update',
                 'trayectos.show',
-                'trayectos.delete',
+                'trayectos.destroy',
             ]);
 
             // Asignar permisos al rol DIRECTOR
@@ -166,21 +172,21 @@ class RolesAndPermissionsSeeder extends Seeder
                 'aulas.edit',
                 'aulas.update',
                 'aulas.show',
-                'aulas.delete',
+                'aulas.destroy',
                 'pnfs.index',
                 'pnfs.create',
                 'pnfs.store',
                 'pnfs.edit',
                 'pnfs.update',
                 'pnfs.show',
-                'pnfs.delete',
+                'pnfs.destroy',
                 'trayectos.index',
                 'trayectos.create',
                 'trayectos.store',
                 'trayectos.edit',
                 'trayectos.update',
                 'trayectos.show',
-                'trayectos.delete',
+                'trayectos.destroy',
             ]);
 
             // Asignar permisos al rol ADMINISTRADOR
@@ -194,35 +200,35 @@ class RolesAndPermissionsSeeder extends Seeder
                 'roles.edit',
                 'roles.update',
                 'roles.show',
-                'roles.delete',
+                'roles.destroy',
                 'aulas.index',
                 'aulas.create',
                 'aulas.store',
                 'aulas.edit',
                 'aulas.update',
                 'aulas.show',
-                'aulas.delete',
+                'aulas.destroy',
                 'tipo-aulas.index',
                 'tipo-aulas.create',
                 'tipo-aulas.store',
                 'tipo-aulas.edit',
                 'tipo-aulas.update',
                 'tipo-aulas.show',
-                'tipo-aulas.delete',
+                'tipo-aulas.destroy',
                 'pnfs.index',
                 'pnfs.create',
                 'pnfs.store',
                 'pnfs.edit',
                 'pnfs.update',
                 'pnfs.show',
-                'pnfs.delete',
+                'pnfs.destroy',
                 'trayectos.index',
                 'trayectos.create',
                 'trayectos.store',
                 'trayectos.edit',
                 'trayectos.update',
                 'trayectos.show',
-                'trayectos.delete',
+                'trayectos.destroy',
             ]);
         }
 

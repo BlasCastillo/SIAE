@@ -9,24 +9,20 @@ class Pnfs extends Model
 {
     use HasFactory;
 
-    // Especifica el nombre de la tabla (opcional si sigue la convención)
     protected $table = 'pnfs';
 
-    // Campos que se pueden asignar masivamente
-    protected $fillable = [
-        'nombre',
-        'descripcion',
-        'estatus',
-    ];
+    protected $fillable = ['codigo', 'nombre', 'descripcion', 'estatus'];
 
-    // Campos que deben ser tratados como fechas (opcional)
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
 
-    // Casts para transformar tipos de datos (opcional)
-    protected $casts = [
-        'estatus' => 'boolean',
-    ];
+    // 🔥 Método para desactivar un PNF
+    public function desactivar()
+    {
+        $this->update(['estatus' => '0']);
+    }
+
+    // 🔥 Método para activar un PNF
+    public function activar()
+    {
+        $this->update(['estatus' => '1']);
+    }
 }

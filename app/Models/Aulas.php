@@ -9,20 +9,25 @@ class Aulas extends Model
 {
     use HasFactory;
 
-    // Especifica el nombre de la tabla (opcional si sigue la convención)
     protected $table = 'aulas';
 
-    // Atributos que se pueden asignar masivamente
-    protected $fillable = [
-        'nombre',
-        'capacidad',
-        'estatus',
-        'fk_tipo_aulas',
-    ];
+    protected $fillable = ['nombre', 'descripcion', 'cantidad', 'estatus', 'fk_tipo_aulas'];
 
-    // Relación con el modelo TipoAulas
-    public function tipoAula()
+    // 🔥 Relación con TipoAula (un aula pertenece a un tipo de aula)
+    public function tipoAulas()
     {
         return $this->belongsTo(TipoAulas::class, 'fk_tipo_aulas');
+    }
+
+    // 🔥 Método para desactivar un aula
+    public function desactivar()
+    {
+        $this->update(['estatus' => '0']);
+    }
+
+    // 🔥 Método para activar un aula
+    public function activar()
+    {
+        $this->update(['estatus' => '1']);
     }
 }
