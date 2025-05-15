@@ -15,6 +15,11 @@ class AulasController extends Controller
         return view('aulas.index', compact('aulas', 'mostrarInactivas'));
     }
 
+    public function show(Aulas $aula)
+    {
+        return view('aulas.show', compact('aula'));
+    }
+
     public function create()
     {
         $tipoAulas = TipoAulas::where('estatus', '1')->get(); // 🔥 Solo tipos de aula activos

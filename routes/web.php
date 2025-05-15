@@ -14,6 +14,9 @@ use App\Http\Controllers\DuracionController;
 use App\Http\Controllers\UnidadCurricularController;
 use App\Http\Controllers\DiaController;
 use App\Http\Controllers\HoraController;
+use App\Http\Controllers\ExcelController;
+use App\Http\Controllers\ReportPdfController;
+
 
 Route::middleware([
     'auth:web',
@@ -22,10 +25,7 @@ Route::middleware([
     CheckPermission::class,
 ])->group(function () {
 
-    // AULAS
-    Route::resource('aulas', AulasController::class);
-    Route::put('aulas/{id}/activate', [AulasController::class, 'activate'])->name('aulas.activate');
-    Route::get('/aulas', [AulasController::class, 'index'])->name('aulas.index');
+
 
     // TIPO-AULAS
     Route::resource('tipo-aulas', TipoAulasController::class);
@@ -102,7 +102,30 @@ Route::middleware([
         Route::get('/horas/{hora}/edit', [HoraController::class, 'edit'])->name('horas.edit');
         Route::put('/horas/{hora}', [HoraController::class, 'update'])->name('horas.update');
         Route::delete('/horas/{hora}', [HoraController::class, 'destroy'])->name('horas.destroy');
+
+        // Rutas para el controlador AulaController
+        Route::get('/aulas', [AulasController::class, 'index'])->name('aulas.index');
+        Route::get('/aulas/create', [AulasController::class, 'create'])->name('aulas.create');
+        Route::post('/aulas', [AulasController::class, 'store'])->name('aulas.store');
+        Route::get('/aulas/{aula}/edit', [AulasController::class, 'edit'])->name('aulas.edit');
+        Route::put('/aulas/{aula}', [AulasController::class, 'update'])->name('aulas.update');
+        Route::delete('/aulas/{aula}', [AulasController::class, 'destroy'])->name('aulas.destroy');
     });
+
+    Route::get('/import', [ExcelController::class, 'showImportView'])->name('excel_import.view');
+    Route::get('/download-template', [ExcelController::class, 'downloadTemplate'])->name('excel_download.template');
+    Route::post('/import', [ExcelController::class, 'handleImport'])->name('excel_import.handle');
+    Route::post('/import/preview', [ExcelController::class, 'previewImport'])->name('excel_import.preview');
+
+
+
+
+    Route::get('/users/reporte-pdf', [ReportPdfController::class, 'generarReporteUsers'])->name('users.reportePdf');
+    Route::get('/unidad_curricular/reporte-pdf', [ReportPdfController::class, 'generarReporteUnidadCurricular'])->name('unidad_curricular.reportePdf');
+    Route::get('/pnf/reporte-pdf', [ReportPdfController::class, 'generarReportePnfs'])->name('pnfs.reportePdf');
+    Route::get('/aulas/reporte-pdf', [ReportPdfController::class, 'generarReporteAulas'])->name('aulas.reportePdf');
+
+
 
     Route::get('/unidad_curricular/trayectos/{pnfId}', [UnidadCurricularController::class, 'getTrayectosPorPnf'])->name('unidad_curricular.getTrayectosPorPnf');
 

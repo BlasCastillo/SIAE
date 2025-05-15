@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders; // Namespace correcto
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
