@@ -7,9 +7,9 @@ FROM php:8.2-fpm-alpine
 WORKDIR /app
 COPY --from=build /app /app
 
-# Instalar dependencias para PostgreSQL
-RUN apk add --no-cache postgresql-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+# Instalar dependencias para PostgreSQL y GD
+RUN apk add --no-cache postgresql-dev php82-gd \
+    && docker-php-ext-install pdo pdo_pgsql gd
 
 # Permisos y optimización
 RUN chmod -R 775 storage bootstrap/cache && \
