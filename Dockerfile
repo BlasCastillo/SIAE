@@ -8,7 +8,8 @@ WORKDIR /app
 COPY --from=build /app /app
 
 # Instalar dependencias para PostgreSQL y GD
-RUN apk add --no-cache postgresql-dev php82-gd \
+RUN apk add --no-cache postgresql-dev libpng-dev libjpeg-turbo-dev freetype-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_pgsql gd
 
 # Permisos y optimización
