@@ -30,4 +30,10 @@ class CheckPermission
 
         return $next($request);
     }
+
+        protected $middleware = [
+        // Otros middlewares...
+        \App\Http\Middleware\TrustProxies::class,
+    ];
+
 }
