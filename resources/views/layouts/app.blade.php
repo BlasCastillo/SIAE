@@ -21,11 +21,11 @@
 
         {{-- ESTILOS PLANTILLA --}}
         <!-- CSS -->
-    <link rel="stylesheet" href={{asset('Css/Roles.css')}}>
+    <link rel="stylesheet" href={{asset('css/Roles.css')}}>
     <link rel="stylesheet" href={{asset('css/Valores.css')}}>
-    <link rel="stylesheet" href={{asset('Css/Panel.css')}}>
-    <link rel="stylesheet" href={{asset('Css/Menu.css')}}>
-    <link rel="stylesheet" href={{asset('Css/Responsive.css')}}>
+    <link rel="stylesheet" href={{asset('css/Panel.css')}}>
+    <link rel="stylesheet" href={{asset('css/Menu.css')}}>
+    <link rel="stylesheet" href={{asset('css/Responsive.css')}}>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Javascript -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -56,12 +56,11 @@
 
         @stack('modals')
 
-        @livewireScripts
 
         {{-- SCRPITS PLANTILLA --}}
-        <script src= {{ asset('Javascript/Modal.js') }}></script>
-        <script src= {{ asset('Javascript/Charts.js') }}></script>
-        <script src= {{ asset('Javascript/Roles.js') }}></script>
+        <script src= {{ asset('javascript/Modal.js') }}></script>
+        <script src= {{ asset('javascript/Charts.js') }}></script>
+        <script src= {{ asset('javascript/Roles.js') }}></script>
 
     </body>
 </html>
