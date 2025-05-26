@@ -22,7 +22,7 @@
         {{-- ESTILOS PLANTILLA --}}
         <!-- CSS -->
     <link rel="stylesheet" href={{asset('Css/Roles.css')}}>
-    <link rel="stylesheet" href={{asset('Css/Valores.css')}}>
+    <link rel="stylesheet" href={{asset('css/Valores.css')}}>
     <link rel="stylesheet" href={{asset('Css/Panel.css')}}>
     <link rel="stylesheet" href={{asset('Css/Menu.css')}}>
     <link rel="stylesheet" href={{asset('Css/Responsive.css')}}>
