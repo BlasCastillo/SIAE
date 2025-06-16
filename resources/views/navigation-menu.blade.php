@@ -43,6 +43,11 @@
                                     {{ __('PNFs') }}
                                 </x-dropdown-link>
                             @endcan
+                            @can('sedes.index')
+                                <x-dropdown-link href="{{ route('sedes.index') }}">
+                                    {{ __('Sedes') }}
+                                </x-dropdown-link>
+                            @endcan
                         </x-slot>
                     </x-dropdown>
 
@@ -57,6 +62,11 @@
                         </x-slot>
 
                         <x-slot name="content">
+                            @can('docentesporpnf.index')
+                                <x-dropdown-link href="{{ route('docentesporpnf.index') }}">
+                                    {{ __('Docente por PNF') }}
+                                </x-dropdown-link>
+                            @endcan
                             @can('trayectos.index')
                                 <x-dropdown-link href="{{ route('trayectos.index') }}">
                                     {{ __('Trayectos') }}

@@ -11,8 +11,13 @@ class Pnfs extends Model
 
     protected $table = 'pnfs';
 
-    protected $fillable = ['codigo', 'nombre', 'descripcion', 'estatus'];
+    protected $fillable = ['codigo', 'nombre', 'descripcion', 'estatus', 'fk_sede'];
 
+    // 🔥 Relación con Sedes
+    public function sede()
+    {
+        return $this->belongsTo(Sedes::class, 'fk_sede');
+    }
 
     // 🔥 Método para desactivar un PNF
     public function desactivar()

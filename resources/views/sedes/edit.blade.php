@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Editar PNF</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Editar Sede</h2>
     </x-slot>
 
     <div class="py-12" style="margin: 0 auto; width: 60%;">
@@ -9,54 +9,46 @@
 
                 <x-validation-errors class="mb-4" />
 
-                <form method="POST" action="{{ route('pnfs.update', $pnf) }}">
+                <form method="POST" action="{{ route('sedes.update', $sede) }}">
                     @csrf
                     @method('PUT')
 
                     <div>
                         <x-label for="codigo" value="Código" />
-                        <x-input id="codigo" class="block mt-1 w-full" type="text" name="codigo" value="{{ $pnf->codigo }}" required autocomplete="codigo" />
-                        <span id="codigo-error" class="error-message text-red-500 text-sm hidden"></span>
+                        <x-input id="codigo" class="block mt-1 w-full" type="text" name="codigo" value="{{ $sede->codigo }}" required autocomplete="codigo" />
+                        <span class="error-message text-red-500 text-sm hidden"></span>
                     </div>
 
                     <div>
                         <x-label for="nombre" value="Nombre" />
-                        <x-input id="nombre" class="block mt-1 w-full" type="text" name="nombre" value="{{ $pnf->nombre }}" required autocomplete="nombre" />
+                        <x-input id="nombre" class="block mt-1 w-full" type="text" name="nombre" value="{{ $sede->nombre }}" required autocomplete="nombre" />
                         <span class="error-message text-red-500 text-sm hidden"></span>
                     </div>
 
                     <div class="mt-4">
                         <x-label for="descripcion" value="Descripción" />
-                        <x-input id="descripcion" class="block mt-1 w-full" type="text" name="descripcion" value="{{ $pnf->descripcion }}" required autocomplete="descripcion" />
-                        <span class="error-message text-red-500 text-sm hidden"></span>
-                    </div>
-
-                    <div class="mt-4">
-                        <x-label for="fk_sede" value="Sede" />
-                        <select name="fk_sede" id="fk_sede" class="w-full pl-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                            @foreach ($sedes as $sede)
-                                <option value="{{ $sede->id }}" {{ $pnf->fk_sede == $sede->id ? 'selected' : '' }}>{{ $sede->nombre }}</option>
-                            @endforeach
-                        </select>
+                        <x-input id="descripcion" class="block mt-1 w-full" type="text" name="descripcion" value="{{ $sede->descripcion }}" required autocomplete="descripcion" />
                         <span class="error-message text-red-500 text-sm hidden"></span>
                     </div>
 
                     <div class="mt-4">
                         <x-label for="estatus" value="Estatus" />
                         <select name="estatus" id="estatus" class="w-full pl-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                            <option value="1" {{ $pnf->estatus == '1' ? 'selected' : '' }}>Activo</option>
-                            <option value="0" {{ $pnf->estatus == '0' ? 'selected' : '' }}>Inactivo</option>
+                            <option value="1" {{ $sede->estatus == '1' ? 'selected' : '' }}>Activo</option>
+                            <option value="0" {{ $sede->estatus == '0' ? 'selected' : '' }}>Inactivo</option>
                         </select>
                     </div>
 
                     <div class="flex items-center justify-end mt-4">
-                        <a href="{{ route('pnfs.index') }}" class="btn btn-secondary">Volver</a>
-                        <button id="submitButton" class="btn btn-primary ms-4"><i class="bi bi-check-lg"></i>Actualizar PNF</button>
+                        <a href="{{ route('sedes.index') }}" class="btn btn-secondary">Volver</a>
+                        <button id="submitButton" class="btn btn-primary ms-4"><i class="bi bi-check-lg"></i>Actualizar Sede</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+
 
     <script>
         $(document).ready(function() {
@@ -135,5 +127,4 @@
             validarFormulario(); // Para validar al cargar la página
         });
     </script>
-
 </x-app-layout>

@@ -6,12 +6,11 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <!-- Controles Superiores (Boton Crear y Ver + Buscador) -->
+                <!-- Controles Superiores (Botón Crear y Ver + Buscador) -->
                 <div class="flex justify-between items-center mb-4 gap-4">
                     <div class="flex gap-4">
-                        <a href="{{ route('unidad_curricular.create') }}" class="btn btn-primary"><i
-                                class="bi bi-check-lg"></i>
-                            Crear Unidad Curricular
+                        <a href="{{ route('unidad_curricular.create') }}" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> Crear Unidad Curricular
                         </a>
 
                         <a href="{{ route('unidad_curricular.index', ['ver_inactivas' => !$mostrarInactivas]) }}"
@@ -20,8 +19,7 @@
                         </a>
                     </div>
 
-                    <form method="GET" action="{{ route('unidad_curricular.index') }}"
-                        class="flex gap-4 items-center">
+                    <form method="GET" action="{{ route('unidad_curricular.index') }}" class="flex gap-4 items-center">
                         <!-- Filtro por PNF -->
                         <div class="relative flex-grow max-w-md">
                             <x-label for="filter_pnf" value="Filtrar por PNF" />
@@ -29,8 +27,7 @@
                                 class="w-full pl-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                                 <option value="">Todos</option>
                                 @foreach ($pnfs as $pnf)
-                                    <option value="{{ $pnf->id }}"
-                                        {{ request('filter_pnf') == $pnf->id ? 'selected' : '' }}>
+                                    <option value="{{ $pnf->id }}" {{ request('filter_pnf') == $pnf->id ? 'selected' : '' }}>
                                         {{ $pnf->nombre }}
                                     </option>
                                 @endforeach
@@ -48,7 +45,7 @@
                         </div>
 
                         <!-- Botón Filtrar -->
-                        <button type="submit" class=" btn btn-success ms-4">Filtrar</button>
+                        <button type="submit" class="btn btn-success ms-4">Filtrar</button>
                     </form>
                 </div>
 
@@ -61,22 +58,20 @@
                 <!-- Tabla -->
                 <table class="w-full table-auto border-collapse border border-gray-200" id="mainTable">
                     <thead class="bg-gray-100">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Código</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Nombre</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Descripción</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Duración</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">PNF</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Trayecto</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Acciones</th>
-                            </tr>
-                        </thead>
+                        <tr>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Código</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Nombre</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Descripción</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Horas Académicas</th> <!-- Modificado -->
+                            <th class="border border-gray-300 px-4 py-2 text-left">PNF</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Trayecto</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Acciones</th>
+                        </tr>
+                    </thead>
                     <tbody id="tableBody">
                         @if ($unidadCurricular->isEmpty())
                             <tr>
-                                <td colspan="10" class="border px-4 py-2 text-center">No hay Unidades Curriculares
-                                    registradas.</td>
+                                <td colspan="10" class="border px-4 py-2 text-center">No hay Unidades Curriculares registradas.</td>
                             </tr>
                         @endif
                         @foreach ($unidadCurricular as $unidad)
@@ -84,7 +79,7 @@
                                 <td class="border border-gray-300 px-4 py-2">{{ $unidad->codigo }}</td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $unidad->nombre }}</td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $unidad->descripcion }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $unidad->duracion }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $unidad->horas_academicas }}</td> <!-- Modificado -->
                                 <td class="border border-gray-300 px-4 py-2">{{ $unidad->pnf->nombre }}</td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $unidad->trayecto->nombre }}</td>
                                 <td class="border border-gray-300 px-4 py-2">

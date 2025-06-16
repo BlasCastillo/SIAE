@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Lista de PNF</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Lista de Sedes</h2>
     </x-slot>
 
     <div class="py-12">
@@ -8,9 +8,8 @@
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 <div class="flex justify-between items-center mb-4 gap-4">
                     <div class="flex gap-4">
-                        <a href="{{ route('pnfs.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Crear PNF</a>
-                        <a href="{{ route('pnfs.index', ['ver_inactivas' => !$mostrarInactivas]) }}"
-                            class="btn btn-secondary">
+                        <a href="{{ route('sedes.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Crear Sede</a>
+                        <a href="{{ route('sedes.index', ['ver_inactivas' => !$mostrarInactivas]) }}" class="btn btn-secondary">
                             {{ $mostrarInactivas ? 'Ver Activos' : 'Ver Inactivos' }}
                         </a>
                     </div>
@@ -34,28 +33,25 @@
                             <th class="border border-gray-300 px-4 py-2 text-left">Código</th>
                             <th class="border border-gray-300 px-4 py-2 text-left">Nombre</th>
                             <th class="border border-gray-300 px-4 py-2 text-left">Descripción</th>
-                            <th class="border border-gray-300 px-4 py-2 text-left">Sede</th> <!-- 🔥 Nueva columna -->
                             <th class="border border-gray-300 px-4 py-2 text-left">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        @if ($pnfs->isEmpty())
+                        @if ($sedes->isEmpty())
                             <tr>
-                                <td colspan="10" class="border px-4 py-2 text-center">No hay PNF registrados.</td>
+                                <td colspan="10" class="border px-4 py-2 text-center">No hay sedes registradas.</td>
                             </tr>
                         @endif
-                        @foreach ($pnfs as $pnf)
+                        @foreach ($sedes as $sede)
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="border border-gray-300 px-4 py-2">{{ $pnf->codigo }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $pnf->nombre }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $pnf->descripcion }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $pnf->sede->nombre }}</td> <!-- 🔥 Mostrar sede -->
+                                <td class="border border-gray-300 px-4 py-2">{{ $sede->codigo }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $sede->nombre }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $sede->descripcion }}</td>
                                 <td class="border border-gray-300 px-4 py-2">
-                                    <a href="{{ route('pnfs.edit', $pnf) }}" class="btn btn-warning inline-flex items-center gap-1 px-3 py-1 rounded hover:bg-yellow-400 transition">
+                                    <a href="{{ route('sedes.edit', $sede) }}" class="btn btn-warning inline-flex items-center gap-1 px-3 py-1 rounded hover:bg-yellow-400 transition">
                                         <i class="bi bi-pencil"></i> Editar
                                     </a>
-                                    <form action="{{ route('pnfs.destroy', $pnf) }}" method="POST"
-                                        class="inline-block ml-2 delete-form">
+                                    <form action="{{ route('sedes.destroy', $sede) }}" method="POST" class="inline-block ml-2 delete-form">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">
@@ -67,8 +63,8 @@
                         @endforeach
                     </tbody>
                 </table>
-                
-                <!-- Controles de paginación y selección -->
+
+                <!-- Controles de paginación y select debajo de la tabla -->
                 <div class="flex justify-between items-center mt-6">
                     <select id="rowsPerPage"
                         class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition w-36">
@@ -79,14 +75,12 @@
 
                     <div id="pagination" class="flex gap-2"></div>
                 </div>
-
             </div>
         </div>
     </div>
+</x-app-layout>
 
-
-    {{-- paginacion y busqueda --}}
-    <style>
+<style>
         .pagination-btn {
             padding: 8px 14px;
             border: 1px solid #ddd;
@@ -272,4 +266,4 @@
             });
         });
     </script>
-</x-app-layout>
+

@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\UnidadCurricular;
-use App\Models\PNF;
-use App\Models\Trayecto;
-use App\Models\Duracion;
 use App\Models\Pnfs;
 use App\Models\Trayectos;
+use App\Models\Duracion;
 use Illuminate\Http\Request;
 
 class UnidadCurricularController extends Controller
@@ -18,32 +16,25 @@ class UnidadCurricularController extends Controller
         $filterPnf = $request->query('filter_pnf');
         $filterTrayecto = $request->query('filter_trayecto');
 
-        // Obtener todos los PNF
         $pnfs = Pnfs::all();
-
-        // Filtrar trayectos según el PNF seleccionado
         $trayectos = $filterPnf
             ? Trayectos::where('fk_pnf', $filterPnf)->get()
-            : Trayectos::all(); // Si no se selecciona un PNF, obtener todos los trayectos
+            : Trayectos::all();
 
-        // Filtrar Unidades Curriculares según PNF y Trayecto
         $unidadCurricular = UnidadCurricular::with(['pnf', 'trayecto', 'duracionRelacion'])
             ->when(!$mostrarInactivas, function ($query) {
-                $query->where('estatus', '1'); // Mostrar solo activas
+                $query->where('estatus', '1');
             })
             ->when($filterPnf, function ($query, $filterPnf) {
-                $query->where('fk_pnf', $filterPnf); // Filtrar por PNF
+                $query->where('fk_pnf', $filterPnf);
             })
             ->when($filterTrayecto, function ($query, $filterTrayecto) {
-                $query->where('fk_trayecto', $filterTrayecto); // Filtrar por Trayecto
+                $query->where('fk_trayecto', $filterTrayecto);
             })
             ->get();
 
         return view('unidad_curricular.index', compact('unidadCurricular', 'mostrarInactivas', 'pnfs', 'trayectos', 'filterPnf'));
     }
-
-
-
 
     public function create()
     {
@@ -59,7 +50,7 @@ class UnidadCurricularController extends Controller
             'codigo' => 'required|string|min:3|max:5|unique:unidad_curricular,codigo',
             'nombre' => "required|string|max:100|unique:unidad_curricular,nombre,NULL,id,fk_pnf,{$request->fk_pnf},fk_trayecto,{$request->fk_trayecto}",
             'descripcion' => 'required|string|max:100',
-            'duracion' => 'required|string|max:100',
+            'horas_academicas' => 'required|integer', // Cambio: validar como entero
             'fk_pnf' => 'required|exists:pnfs,id',
             'fk_trayecto' => 'required|exists:trayectos,id',
             'fk_duracion' => 'required|exists:duraciones,id',
@@ -69,7 +60,7 @@ class UnidadCurricularController extends Controller
             'codigo' => strtoupper($request->codigo),
             'nombre' => strtoupper($request->nombre),
             'descripcion' => strtoupper($request->descripcion),
-            'duracion' => strtoupper($request->duracion),
+            'horas_academicas' => $request->horas_academicas, // Cambio
             'estatus' => '1',
             'fk_pnf' => $request->fk_pnf,
             'fk_trayecto' => $request->fk_trayecto,
@@ -93,7 +84,7 @@ class UnidadCurricularController extends Controller
             'codigo' => "required|string|min:3|max:5|unique:unidad_curricular,codigo,{$unidadCurricular->id}",
             'nombre' => "required|string|max:100|unique:unidad_curricular,nombre,{$unidadCurricular->id},id,fk_pnf,{$request->fk_pnf},fk_trayecto,{$request->fk_trayecto}",
             'descripcion' => 'required|string|max:100',
-            'duracion' => 'required|string|max:100',
+            'horas_academicas' => 'required|integer', // Cambio: validar como entero
             'estatus' => 'required|in:0,1',
             'fk_pnf' => 'required|exists:pnfs,id',
             'fk_trayecto' => 'required|exists:trayectos,id',
@@ -104,7 +95,7 @@ class UnidadCurricularController extends Controller
             'codigo' => strtoupper($request->codigo),
             'nombre' => strtoupper($request->nombre),
             'descripcion' => strtoupper($request->descripcion),
-            'duracion' => strtoupper($request->duracion),
+            'horas_academicas' => $request->horas_academicas, // Cambio
             'estatus' => $request->estatus,
             'fk_pnf' => $request->fk_pnf,
             'fk_trayecto' => $request->fk_trayecto,
@@ -121,12 +112,19 @@ class UnidadCurricularController extends Controller
     }
 
     public function getTrayectosPorPnf($pnfId)
-{
-    // Obtener los trayectos asociados al PNF seleccionado
-    $trayectos = Trayectos::where('fk_pnf', $pnfId)->get();
+    {
+        $trayectos = Trayectos::where('fk_pnf', $pnfId)->get();
+        return response()->json($trayectos);
+    }
 
-    // Devolverlos como JSON
-    return response()->json($trayectos);
+    public function getUnidadesPorTrayecto($pnfId, $trayectoId)
+{
+    $unidades = UnidadCurricular::where('fk_pnf', $pnfId)
+        ->where('fk_trayecto', $trayectoId)
+        ->where('estatus', '1') // Solo unidades activas
+        ->get();
+
+    return response()->json($unidades);
 }
 
 }

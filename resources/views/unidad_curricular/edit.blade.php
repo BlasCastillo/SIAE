@@ -30,14 +30,14 @@
                     <!-- Descripción -->
                     <div class="mt-4">
                         <x-label for="descripcion" value="Descripción" />
-                        <x-input id="descripcion" class="block mt-1 w-full" type="text" name="descripcion" value="{{ $unidadCurricular->descripcion }}" required  />
+                        <x-input id="descripcion" class="block mt-1 w-full" type="text" name="descripcion" value="{{ $unidadCurricular->descripcion }}" required />
                         <span class="error-message text-red-500 text-sm hidden"></span>
                     </div>
 
-                    <!-- Duración -->
+                    <!-- Horas Académicas -->
                     <div class="mt-4">
-                        <x-label for="duracion" value="Duración" />
-                        <x-input id="duracion" class="block mt-1 w-full" type="text" name="duracion" value="{{ $unidadCurricular->duracion }}" required  />
+                        <x-label for="horas_academicas" value="Horas Académicas" />
+                        <x-input id="horas_academicas" class="block mt-1 w-full" type="text" name="horas_academicas" value="{{ $unidadCurricular->horas_academicas }}" required />
                         <span class="error-message text-red-500 text-sm hidden"></span>
                     </div>
 
@@ -102,107 +102,72 @@
 
     <script>
     $(document).ready(function() {
-    // Selector dependiente: Cargar trayectos al cambiar PNF
-    $('#fk_pnf').on('change', function() {
-        const pnfId = $(this).val();
-        $('#fk_trayecto').prop('disabled', true).empty().append('<option value="" selected disabled>Cargando trayectos...</option>');
+        // Selector dependiente: Cargar trayectos al cambiar PNF
+        $('#fk_pnf').on('change', function() {
+            const pnfId = $(this).val();
+            $('#fk_trayecto').prop('disabled', true).empty().append('<option value="" selected disabled>Cargando trayectos...</option>');
 
-        if (pnfId) {
-            $.ajax({
-                url: `/unidad_curricular/trayectos/${pnfId}`, // Ajusta este endpoint según tu configuración
-                method: 'GET',
-                success: function(data) {
-                    $('#fk_trayecto').prop('disabled', false).empty().append('<option value="" disabled>Seleccione un trayecto</option>');
-                    data.forEach(trayecto => {
-                        $('#fk_trayecto').append(`<option value="${trayecto.id}" ${trayecto.id == "{{ $unidadCurricular->fk_trayecto }}" ? 'selected' : ''}>${trayecto.nombre}</option>`);
-                    });
-                },
-                error: function() {
-                    $('#fk_trayecto').prop('disabled', true).empty().append('<option value="" selected disabled>Error al cargar trayectos</option>');
-                }
-            });
-        }
-    });
-
-    // Validaciones dinámicas con jQuery
-    $('input[type="text"]').on('input', function() {
-        $(this).val($(this).val().toUpperCase());
-    });
-
-    function mostrarError(id, mensaje) {
-        $('#' + id).addClass('border-red-500');
-        $('#' + id).next('.error-message').text(mensaje).removeClass('hidden');
-    }
-
-    function ocultarError(id) {
-        $('#' + id).removeClass('border-red-500');
-        $('#' + id).next('.error-message').text('').addClass('hidden');
-    }
-
-    $('#codigo').on('input', function() {
-        const valor = $(this).val();
-        const regex = /^[A-Za-z0-9]{3,5}$/; // Entre 3 y 5 caracteres alfanuméricos
-        if (!regex.test(valor)) {
-            mostrarError('codigo', 'Debe contener entre 3 y 5 caracteres alfanuméricos.');
-        } else {
-            ocultarError('codigo');
-        }
-    });
-
-    $('#nombre').on('input', function() {
-        const valor = $(this).val();
-        const regex = /^[A-Za-zÁÉÍÓÚÑñ\s]+$/; // Solo letras y espacios
-        if (!regex.test(valor)) {
-            mostrarError('nombre', 'Solo se permiten letras y espacios.');
-        } else {
-            ocultarError('nombre');
-        }
-    });
-
-    $('#descripcion').on('input', function() {
-        const valor = $(this).val();
-        if (valor.trim() === '') {
-            mostrarError('descripcion', 'La descripción no puede estar vacía.');
-        } else {
-            ocultarError('descripcion');
-        }
-    });
-
-    $('#duracion').on('input', function() {
-        const valor = $(this).val();
-        if (valor.trim() === '') {
-            mostrarError('duracion', 'La duración no puede estar vacía.');
-        } else {
-            ocultarError('duracion');
-        }
-    });
-
-    $('#fk_trayecto').on('change', function() {
-        if ($(this).val() === null || $(this).val() === '') {
-            mostrarError('fk_trayecto', 'Debe seleccionar un trayecto válido.');
-        } else {
-            ocultarError('fk_trayecto');
-        }
-    });
-
-    // Validar el formulario
-    function validarFormulario() {
-        let camposValidos = true;
-        $('input, select').each(function() {
-            if ($(this).hasClass('border-red-500') || $(this).val().trim() === '') {
-                camposValidos = false;
+            if (pnfId) {
+                $.ajax({
+                    url: `/unidad_curricular/trayectos/${pnfId}`,
+                    method: 'GET',
+                    success: function(data) {
+                        $('#fk_trayecto').prop('disabled', false).empty().append('<option value="" disabled>Seleccione un trayecto</option>');
+                        data.forEach(trayecto => {
+                            $('#fk_trayecto').append(`<option value="${trayecto.id}" ${trayecto.id == "{{ $unidadCurricular->fk_trayecto }}" ? 'selected' : ''}>${trayecto.nombre}</option>`);
+                        });
+                    },
+                    error: function() {
+                        $('#fk_trayecto').prop('disabled', true).empty().append('<option value="" selected disabled>Error al cargar trayectos</option>');
+                    }
+                });
             }
         });
 
-        $('#submitButton').prop('disabled', !camposValidos);
-    }
+        // Validaciones dinámicas con jQuery
+        $('input[type="text"]').on('input', function() {
+            $(this).val($(this).val().toUpperCase());
+        });
 
-    // Ejecutar validaciones cada vez que hay un cambio en los campos
-    $('input, select').on('input change', validarFormulario);
+        $('#horas_academicas').on('keypress', function(event) {
+            // Restringir entrada a solo números
+            if (!/\d/.test(event.key)) {
+                event.preventDefault();
+            }
+        }).on('input', function() {
+            const valor = $(this).val();
+            const regex = /^[0-9]+$/; // Validación adicional
+            if (!regex.test(valor)) {
+                mostrarError('horas_academicas', 'Solo se permiten números.');
+            } else {
+                ocultarError('horas_academicas');
+            }
+        });
 
-    // Validar el formulario inicialmente al cargar la página
-    validarFormulario();
-});
+        function mostrarError(id, mensaje) {
+            $('#' + id).addClass('border-red-500');
+            $('#' + id).next('.error-message').text(mensaje).removeClass('hidden');
+        }
 
+        function ocultarError(id) {
+            $('#' + id).removeClass('border-red-500');
+            $('#' + id).next('.error-message').text('').addClass('hidden');
+        }
+
+        function validarFormulario() {
+            let camposValidos = true;
+            $('input, select').each(function() {
+                if ($(this).hasClass('border-red-500') || $(this).val().trim() === '') {
+                    camposValidos = false;
+                }
+            });
+
+            $('#submitButton').prop('disabled', !camposValidos);
+        }
+
+        // Ejecutar validaciones
+        $('input, select').on('input change', validarFormulario);
+        validarFormulario(); // Inicializa la validación al cargar la página
+    });
     </script>
 </x-app-layout>

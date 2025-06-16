@@ -5,14 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UnidadCurricular extends Model
+class Seccion extends Model
 {
     use HasFactory;
 
-    protected $table = 'unidad_curricular';
+    protected $table = 'secciones';
 
-    protected $fillable = ['nombre', 'descripcion', 'horas_academicas', 'estatus', 'codigo', 'fk_pnf', 'fk_trayecto', 'fk_duracion'];
-
+    protected $fillable = [
+        'nombre', 
+        'codigo', 
+        'cantidad_alumnos', 
+        'fk_pnf', 
+        'fk_trayecto', 
+        'fk_unidad_curricular', 
+        'estatus'
+    ];
 
     // Relación con PNF
     public function pnf()
@@ -26,19 +33,19 @@ class UnidadCurricular extends Model
         return $this->belongsTo(Trayectos::class, 'fk_trayecto');
     }
 
-    // Relación con Duración
-    public function duracionRelacion()
+    // Relación con Unidad Curricular
+    public function unidadCurricular()
     {
-        return $this->belongsTo(Duracion::class, 'fk_duracion');
+        return $this->belongsTo(UnidadCurricular::class, 'fk_unidad_curricular');
     }
 
-    // Activar Unidad Curricular
+    // Activar Sección
     public function activar()
     {
         $this->update(['estatus' => '1']);
     }
 
-    // Desactivar Unidad Curricular
+    // Desactivar Sección
     public function desactivar()
     {
         $this->update(['estatus' => '0']);
