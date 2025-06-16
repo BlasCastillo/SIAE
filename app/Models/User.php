@@ -74,4 +74,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
+
+    public function getTelefonoCompletoAttribute()
+    {
+        return $this->cod_telefono . '-' . $this->num_telefono;
+    }
+
 }

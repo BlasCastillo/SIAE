@@ -8,8 +8,8 @@
     <!-- ICONS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- STYLE -->
-    <link rel="stylesheet" href="{{ asset('Css/Index.css') }}">
-    <link rel="stylesheet" href="{{ asset('Css/Valores.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Valores.css') }}">
 </head>
 
 <body>

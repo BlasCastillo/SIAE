@@ -14,6 +14,9 @@ use App\Http\Controllers\DuracionController;
 use App\Http\Controllers\UnidadCurricularController;
 use App\Http\Controllers\DiaController;
 use App\Http\Controllers\HoraController;
+use App\Http\Controllers\ExcelController;
+use App\Http\Controllers\ReportPdfController;
+
 use App\Http\Controllers\DocentePorPNFController;
 use App\Http\Controllers\SeccionController;
 use App\Http\Controllers\SedesController;
@@ -26,10 +29,7 @@ Route::middleware([
     CheckPermission::class,
 ])->group(function () {
 
-    // AULAS
-    Route::resource('aulas', AulasController::class);
-    Route::put('aulas/{id}/activate', [AulasController::class, 'activate'])->name('aulas.activate');
-    Route::get('/aulas', [AulasController::class, 'index'])->name('aulas.index');
+
 
     // TIPO-AULAS
     Route::resource('tipo-aulas', TipoAulasController::class);
@@ -113,23 +113,6 @@ Route::get('/sedes', [SedesController::class, 'index'])->name('sedes.index');
         Route::put('/horas/{hora}', [HoraController::class, 'update'])->name('horas.update');
         Route::delete('/horas/{hora}', [HoraController::class, 'destroy'])->name('horas.destroy');
     });
-
-    /// Rutas para el controlador DocentePorPNFController
-Route::get('/docentesporpnf', [DocentePorPNFController::class, 'index'])->name('docentesporpnf.index')->middleware('can:docentesporpnf.index');
-Route::get('/docentesporpnf/create', [DocentePorPNFController::class, 'create'])->name('docentesporpnf.create')->middleware('can:docentesporpnf.create');
-Route::post('/docentesporpnf', [DocentePorPNFController::class, 'store'])->name('docentesporpnf.store')->middleware('can:docentesporpnf.store');
-Route::get('/docentesporpnf/{docentePorPNF}/edit', [DocentePorPNFController::class, 'edit'])->name('docentesporpnf.edit')->middleware('can:docentesporpnf.edit');
-Route::put('/docentesporpnf/{docentePorPNF}', [DocentePorPNFController::class, 'update'])->name('docentesporpnf.update')->middleware('can:docentesporpnf.update');
-Route::delete('/docentesporpnf/{docentePorPNF}', [DocentePorPNFController::class, 'destroy'])->name('docentesporpnf.destroy')->middleware('can:docentesporpnf.destroy');
-
-/// Rutas para el controlador SeccionController
-Route::get('/secciones', [SeccionController::class, 'index'])->name('secciones.index')->middleware('can:secciones.index');
-Route::get('/secciones/create', [SeccionController::class, 'create'])->name('secciones.create')->middleware('can:secciones.create');
-Route::post('/secciones', [SeccionController::class, 'store'])->name('secciones.store')->middleware('can:secciones.store');
-Route::get('/secciones/{seccion}/edit', [SeccionController::class, 'edit'])->name('secciones.edit')->middleware('can:secciones.edit');
-Route::put('/secciones/{seccion}', [SeccionController::class, 'update'])->name('secciones.update')->middleware('can:secciones.update');
-Route::delete('/secciones/{seccion}', [SeccionController::class, 'destroy'])->name('secciones.destroy')->middleware('can:secciones.destroy');
-
 
     Route::get('/unidad_curricular/trayectos/{pnfId}', [UnidadCurricularController::class, 'getTrayectosPorPnf'])->name('unidad_curricular.getTrayectosPorPnf');
     Route::get('/unidad_curricular/unidades/{pnf}/{trayecto}', [UnidadCurricularController::class, 'getUnidadesPorTrayecto'])->name('unidad_curricular.getUnidadesPorTrayecto');

@@ -14,6 +14,8 @@
                 <div class="flex justify-between items-center mb-4 gap-4">
                     <div class="flex gap-4">
                         <a href="{{ route('users.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Registrar Usuario</a>
+
+                        <x-pdf-download-button routeName="users.reportePdf" />
                     </div>
 
                     <!-- Buscador (ocupando el espacio restante) -->

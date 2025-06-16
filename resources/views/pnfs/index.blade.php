@@ -13,6 +13,7 @@
                             class="btn btn-secondary">
                             {{ $mostrarInactivas ? 'Ver Activos' : 'Ver Inactivos' }}
                         </a>
+                        <x-pdf-download-button routeName="pnfs.reportePdf" />
                     </div>
 
                     <!-- Buscador -->

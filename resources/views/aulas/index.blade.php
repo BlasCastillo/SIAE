@@ -16,6 +16,7 @@
                         <a href="{{ route('aulas.index', ['ver_inactivas' => true]) }}" class="btn btn-secondary">
                             <i class="bi bi-eye"></i> {{ $mostrarInactivas ? ' Ver Activas' : ' Ver Inactivas' }}
                         </a>
+                        <x-pdf-download-button routeName="aulas.reportePdf" />
                     </div>
 
                     <!-- Buscador (ocupando el espacio restante) -->
